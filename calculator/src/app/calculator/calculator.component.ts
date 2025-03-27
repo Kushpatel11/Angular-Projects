@@ -1,5 +1,10 @@
-import { Component, HostListener, signal } from '@angular/core';
-import $ from 'jquery'; // Import jQuery
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  HostListener,
+  signal,
+} from '@angular/core';
 
 @Component({
   selector: 'app-calculator',
@@ -8,6 +13,7 @@ import $ from 'jquery'; // Import jQuery
   styleUrls: ['./calculator.component.css'],
 })
 export class CalculatorComponent {
+  @ViewChild('result') resultElement!: ElementRef;
   displayResult = signal('');
   maxChars = 132;
 
@@ -34,27 +40,26 @@ export class CalculatorComponent {
     'x',
   ];
 
-  ngAfterViewInit() {
-    this.addJQueryEffects();
+  // Update display styling dynamically
+  updateDisplay() {
+    if (!this.resultElement) return;
+
+    let resultEl = this.resultElement.nativeElement;
+    resultEl.textContent = this.displayResult();
+
+    // Adjust font size dynamically
+    let length = this.displayResult().length;
+    resultEl.style.fontSize =
+      length > 81
+        ? '0.8rem'
+        : length > 18
+        ? '1rem'
+        : length > 13
+        ? '1.5rem'
+        : '2rem';
   }
 
-  addJQueryEffects() {
-    // Example: Flash effect on button click
-    $('.btns').on('click', function () {
-      $(this).fadeOut(100).fadeIn(100);
-    });
-
-    // Example: Highlighting the result text
-    $('#result').hover(
-      function () {
-        $(this).css('color', 'blue');
-      },
-      function () {
-        $(this).css('color', 'black');
-      }
-    );
-  }
-
+  // Handle button inputs
   handleInput(btnValue: string) {
     if (btnValue === 'C') {
       this.displayResult.set('');
@@ -62,7 +67,9 @@ export class CalculatorComponent {
       this.displayResult.set(this.displayResult().slice(0, -1));
     } else if (btnValue === '=') {
       try {
-        this.displayResult.set(eval(this.displayResult()).toString());
+        this.displayResult.set(
+          new Function('return ' + this.displayResult())().toString()
+        );
       } catch {
         this.displayResult.set('Error');
       }
@@ -73,26 +80,18 @@ export class CalculatorComponent {
         );
       }
     } else if (btnValue === '%') {
-      let match = this.displayResult().match(/([\d.]+)([+\-*/])([\d.]+)$/);
-      if (match) {
-        let first = parseFloat(match[1]);
-        let operator = match[2];
-        let last = parseFloat(match[3]);
-        let perValue = (last / 100) * first;
-        this.displayResult.set(
-          this.displayResult().replace(/([\d.]+)$/, perValue.toString())
-        );
-      } else if (this.displayResult().length > 0) {
-        this.displayResult.set(
-          (parseFloat(this.displayResult()) / 100).toString()
-        );
-      }
+      this.displayResult.set(
+        (parseFloat(this.displayResult()) / 100).toString()
+      );
     } else {
       if (this.displayResult().length >= this.maxChars) return;
       this.displayResult.set(this.displayResult() + btnValue);
     }
+
+    this.updateDisplay();
   }
 
+  // Handle keyboard inputs
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     let key = event.key;

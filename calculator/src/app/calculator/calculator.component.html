@@ -1,12 +1,12 @@
 <div class="container">
-  <h4 id="h4">Calculator</h4>
+  <h4 class="title">Calculator</h4>
   <div class="calculator">
     <div class="display">
+      <p id="result">{{ displayResult() || "0" }}</p>
       <div class="cursor"></div>
-      <p class="p" id="result">{{ displayResult() }}</p>
     </div>
     <div class="keypad">
-      @for (btn of buttons; track btn){
+      @for (btn of buttons; track btn) {
       <button class="btns" (click)="handleInput(btn)">
         {{ btn }}
       </button>
