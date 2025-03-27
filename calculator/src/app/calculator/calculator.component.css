@@ -1,0 +1,110 @@
+.container{
+    background-color: #DEF6F7;
+    height: 100vh;
+    width: 100vmax;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    
+}
+
+#h4{
+    text-align: center;
+    font-size: 10vh;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: #7A7D7D;   
+}
+
+.calculator{
+    width: 40vh;
+    border: 0.5rem solid #7CDADF;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1.5rem;
+    box-shadow: 5px 5px 5px #908E8E;
+    
+}
+
+.display{
+    background-color: #BFEDEF;
+    height: 10vh;
+    width: 40vh;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center; 
+    justify-content:right;
+    border: none;
+    position: relative;
+}
+
+.p{
+    padding: 1rem;
+    font-family: cursive;
+    float:right;
+    color: #000000;
+    font-size: 2rem;
+}
+
+.cursor{
+    width: 2px; /* Thickness of the cursor */
+    height: 70%; /* Cursor height relative to display */
+    background-color: #333; /* Cursor color */
+    position: absolute; /* Positioning relative to display */
+    right: 10px; /* Position near the right edge */
+    animation: blink 1s steps(1, start) infinite; /* Blinking animation */
+}
+
+@keyframes blink {
+    0%, 100% {
+      opacity: 1; /* Cursor visible */
+    }
+    50% {
+      opacity: 0; 
+    }
+  }
+
+.keypad{
+    background-color:#9DE3E7;
+    height: 60vh;
+    width: 40vh;
+    border: 2px solid #2CAEB5;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    border-top: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-content:space-evenly;
+    
+    justify-content: space-evenly;
+    border: none;
+}
+
+.btns{
+    height: 9vh;
+    width: 9vh;
+    background-color: #F5F5F5;
+    border-radius: 20%;
+    border: none;
+    box-shadow: 5px 5px 5px #908E8E;
+    transition: box-shadow 0.3s ease;
+    cursor: pointer;
+    font-size: 2rem;
+}
+
+.btns:hover{
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    transform: scale(1.05);
+}
+
+.btns:active {
+    transform: scale(1); /* Slightly smaller when clicked */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduce shadow when clicked */
+  }
+
