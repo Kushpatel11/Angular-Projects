@@ -1,9 +1,11 @@
 <div class="container">
-  <h4 class="title">Calculator</h4>
+  <h4 id="h4">Calculator</h4>
   <div class="calculator">
     <div class="display">
-      <p id="result">{{ displayResult() || "0" }}</p>
       <div class="cursor"></div>
+      <p class="p" id="result" [style.fontSize]="fontSize">
+        {{ displayResult }}
+      </p>
     </div>
     <div class="keypad">
       @for (btn of buttons; track btn) {

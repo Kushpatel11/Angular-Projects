@@ -3,8 +3,9 @@ import {
   ElementRef,
   ViewChild,
   HostListener,
-  signal,
+  inject,
 } from '@angular/core';
+import { CalculatorService } from './calculator.service';
 
 @Component({
   selector: 'app-calculator',
@@ -13,9 +14,9 @@ import {
   styleUrls: ['./calculator.component.css'],
 })
 export class CalculatorComponent {
+  calculatorService = inject(CalculatorService);
+
   @ViewChild('result') resultElement!: ElementRef;
-  displayResult = signal('');
-  maxChars = 132;
 
   buttons = [
     'C',
@@ -40,58 +41,18 @@ export class CalculatorComponent {
     'x',
   ];
 
-  // Update display styling dynamically
-  updateDisplay() {
-    if (!this.resultElement) return;
-
-    let resultEl = this.resultElement.nativeElement;
-    resultEl.textContent = this.displayResult();
-
-    // Adjust font size dynamically
-    let length = this.displayResult().length;
-    resultEl.style.fontSize =
-      length > 81
-        ? '0.8rem'
-        : length > 18
-        ? '1rem'
-        : length > 13
-        ? '1.5rem'
-        : '2rem';
+  get displayResult() {
+    return this.calculatorService.getDisplayValue();
   }
 
-  // Handle button inputs
+  get fontSize() {
+    return this.calculatorService.updateDisplay();
+  }
+
   handleInput(btnValue: string) {
-    if (btnValue === 'C') {
-      this.displayResult.set('');
-    } else if (btnValue === 'x') {
-      this.displayResult.set(this.displayResult().slice(0, -1));
-    } else if (btnValue === '=') {
-      try {
-        this.displayResult.set(
-          new Function('return ' + this.displayResult())().toString()
-        );
-      } catch {
-        this.displayResult.set('Error');
-      }
-    } else if (btnValue === '+/-') {
-      if (this.displayResult().length > 0) {
-        this.displayResult.set(
-          (parseFloat(this.displayResult()) * -1).toString()
-        );
-      }
-    } else if (btnValue === '%') {
-      this.displayResult.set(
-        (parseFloat(this.displayResult()) / 100).toString()
-      );
-    } else {
-      if (this.displayResult().length >= this.maxChars) return;
-      this.displayResult.set(this.displayResult() + btnValue);
-    }
-
-    this.updateDisplay();
+    this.calculatorService.handleInput(btnValue);
   }
 
-  // Handle keyboard inputs
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     let key = event.key;
