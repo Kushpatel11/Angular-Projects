@@ -1,0 +1,109 @@
+
+
+
+.profile-container {
+height: 100vh;
+width: 100vw;
+background-color: #FEFEFE;
+justify-items: center;
+align-content: center;
+}
+.profile{
+  display: flex;
+  width: 60vw;
+  height: 70vh;
+  background: #ECE8E6;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.sidebar {
+  width: 10%;
+  background: #003B47;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  padding: 0.5rem;
+}
+
+.header {
+  display: flex;
+  justify-content:space-evenly;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  height: 10%;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+.user-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+}
+
+.delete-btn {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.profile-body {
+  display: flex;
+}
+
+.profile-image img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.change-img-btn {
+  display: block;
+  margin-top: 10px;
+  background: transparent;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+}
+.left{
+width: 50%;
+}
+.right{
+width: 50%;
+}
+.info-group {
+  
+}
+label {
+  display: block;
+  font-weight: bold;
+}
+input, select {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #f0f0f0;
+  cursor: not-allowed;
+}
+
+.save-btn, .cancel-btn {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.save-btn {
+  background-color: #0C4047;
+  color: white;
+}
+.cancel-btn {
+  background-color: #ccc;
+}
