@@ -1,1 +1,46 @@
-<p>admindashboard works!</p>
+<!-- admin-dashboard.component.html -->
+<main>
+  <!-- Header -->
+  <header class="dashboard-header">
+    <h2>Admin Dashboard</h2>
+    <button class="btn logout-btn" (click)="logout()">Logout</button>
+  </header>
+
+  <!-- Dashboard Content -->
+  <div class="dashboard-container container">
+    <h4 class="mb-4">Registered Users</h4>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users(); let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ user.firstName }}</td>
+            <td>{{ user.lastName }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <button class="btn btn-sm btn-delete" (click)="deleteUser(i)">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box">
+      <p>
+        This panel allows the admin to view and manage all registered users.
+      </p>
+    </div>
+  </div>
+</main>

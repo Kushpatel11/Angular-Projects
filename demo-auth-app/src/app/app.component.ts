@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 
 import { LoginComponent } from './login/login.component';
+import { AdminDashboardComponent } from './admindashboard/admindashboard.component';
 
 @Component({
   selector: 'app-root',
-  imports: [LoginComponent],
+  imports: [AdminDashboardComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
