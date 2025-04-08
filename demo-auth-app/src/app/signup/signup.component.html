@@ -4,7 +4,7 @@
       <!-- Form Section -->
       <div class="col-md-6 form-section">
         <h2 class="mb-4 text-center">Create an Account</h2>
-        <form>
+        <form (ngSubmit)="onSubmit()" #form="ngForm">
           <div class="mb-3">
             <label for="firstname" class="form-label">First Name</label>
             <input
@@ -13,6 +13,8 @@
               class="form-control"
               placeholder="Enter your first name"
               required
+              name="firstname"
+              [(ngModel)]="firstnameValue"
             />
           </div>
 
@@ -24,6 +26,8 @@
               class="form-control"
               placeholder="Enter your last name"
               required
+              name="lastname"
+              [(ngModel)]="lastnameValue"
             />
           </div>
 
@@ -35,6 +39,9 @@
               class="form-control"
               placeholder="Enter your email"
               required
+              name="email"
+              [(ngModel)]="emailValue"
+              email
             />
           </div>
 
@@ -43,14 +50,23 @@
             <input
               [type]="showPassword ? 'text' : 'password'"
               id="password"
-              class="form-control"
+              class="form-control pe-5"
               placeholder="Enter your password"
               required
+              name="password"
+              [(ngModel)]="passwordValue"
+              #passwordInput="ngModel"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$"
             />
+
             <span class="toggle-password" (click)="togglePassword()">👁️</span>
           </div>
 
-          <button type="submit" class="btn btn-primary w-100 mb-3">
+          <button
+            type="submit"
+            class="btn btn-primary w-100 mb-3"
+            [disabled]="!form.valid"
+          >
             Sign Up
           </button>
 
@@ -64,7 +80,7 @@
           </button>
 
           <p class="text-center mt-3">
-            Already have an account? <a href="#">Log in</a>
+            Already have an account? <a [routerLink]="['/login']">Log in</a>
           </p>
         </form>
       </div>

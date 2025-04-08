@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-
-import { LoginComponent } from './login/login.component';
-import { AdminDashboardComponent } from './admindashboard/admindashboard.component';
+import { SignupComponent } from './signup/signup.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [AdminDashboardComponent],
+  imports: [RouterModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
