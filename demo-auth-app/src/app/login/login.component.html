@@ -15,8 +15,8 @@
                 placeholder="Enter your email"
                 name="email"
                 required
-                [value]="email()"
-                (input)="email.set('($event.target as HTMLInputElement).value')"
+                email
+                [(ngModel)]="email"
               />
               @if (isSubmitted() && !email()) {
               <div class="invalid-feedback d-block">
@@ -34,30 +34,19 @@
                 name="password"
                 required
                 [type]="showPassword() ? 'text' : 'password'"
-                [value]="password()"
-                (input)="
-                  onPasswordInput('($event.target as HTMLInputElement).value')
-                "
+                [(ngModel)]="password"
               />
               <span class="toggle-password" (click)="togglePassword()">👁️</span>
-              @if (strength()) {
-              <div
-                class="password-strength"
-                [ngClass]="{
-                  weak: strength() === 'weak',
-                  medium: strength() === 'medium',
-                  strong: strength() === 'strong'
-                }"
-              >
-                {{ strength() | titlecase }}
-              </div>
-              } @if (isSubmitted() && !password()) {
-              <div class="invalid-feedback d-block">Password is required.</div>
-              }
             </div>
 
             <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" id="rememberMe" />
+              <input
+                type="checkbox"
+                class="form-check-input"
+                id="rememberMe"
+                name="rememberMe"
+                [(ngModel)]="rememberMe"
+              />
               <label class="form-check-label" for="rememberMe"
                 >Remember me</label
               >
@@ -67,7 +56,13 @@
               <a href="#" class="text-decoration-none">Forgot password?</a>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Log In</button>
+            <button
+              type="submit"
+              class="btn btn-primary w-100"
+              [disabled]="!loginForm.valid"
+            >
+              Log In
+            </button>
 
             <div class="or-divider">— OR —</div>
 
@@ -80,7 +75,7 @@
               </button>
             </div>
 
-            <p class="text-center mt-3">No account? <a href="#">Sign up</a></p>
+            <p class="text-center mt-3">No account? <a href="">Sign up</a></p>
           </form>
         </div>
 

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { SignupComponent } from './signup/signup.component';
 import { RouterModule } from '@angular/router';
 
 @Component({

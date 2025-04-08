@@ -1,32 +1,58 @@
-import { CommonModule, NgClass, TitleCasePipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   standalone: true,
-  imports: [NgClass, TitleCasePipe, FormsModule, CommonModule, RouterModule],
+  imports: [FormsModule, RouterModule],
 })
 export class LoginComponent {
   email = signal('');
   password = signal('');
   showPassword = signal(false);
-  strength = signal<'weak' | 'medium' | 'strong' | null>(null);
+  rememberMe = signal(false);
+
   isSubmitted = signal(false);
+  private router = inject(Router);
 
   togglePassword(): void {
     this.showPassword.set(!this.showPassword());
   }
 
-  onPasswordInput(value: string) {
-    this.password.set(value);
-    const len = value.length;
-    this.strength.set(len < 6 ? 'weak' : len < 10 ? 'medium' : 'strong');
+  ngOnInit(): void {
+    const remembered = localStorage.getItem('rememberedEmail');
+    if (remembered) {
+      this.email.set(remembered);
+      this.rememberMe.set(true);
+    }
   }
-  onSubmit(): void {
-    this.isSubmitted.set(true);
+
+  onSubmit() {
+    const storedUsers = localStorage.getItem('users');
+    const users = storedUsers ? JSON.parse(storedUsers) : [];
+    const enteredEmail = this.email().trim();
+    const enteredPassword = this.password();
+    console.log(enteredEmail, enteredPassword);
+    if (this.rememberMe()) {
+      localStorage.setItem('rememberedEmail', enteredEmail);
+    } else {
+      localStorage.removeItem('rememberedEmail');
+    }
+
+    const matchedUser = users.find(
+      (user: any) =>
+        user.email === enteredEmail && user.password === enteredPassword
+    );
+
+    if (matchedUser) {
+      localStorage.setItem('loggedInUserSession', JSON.stringify(matchedUser));
+      this.isSubmitted.set(true);
+      this.router.navigate(['/profile']);
+    } else {
+      alert('Invalid email or password');
+    }
   }
 }
