@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { User } from './user.model';
 
 @Component({
   selector: 'app-user-profile',
@@ -39,13 +40,19 @@ export class UserProfileComponent implements OnInit {
       localStorage.getItem('loggedInUserSession') || '{}'
     );
 
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+
+    const currentUser = users.find(
+      (u: any) => u.email === loggedInUser.matchedUser.email
+    );
+
     if (loggedInUser) {
       this.form().patchValue({
-        firstName: loggedInUser.firstName || '',
-        lastName: loggedInUser.lastName || '',
-        email: loggedInUser.email || '',
-        mobile: loggedInUser.mobile || '',
-        password: loggedInUser.password || '',
+        firstName: currentUser.firstName || '',
+        lastName: currentUser.lastName || '',
+        email: currentUser.email || '',
+        mobile: currentUser.mobile || '',
+        password: currentUser.password || '',
       });
     }
   }
@@ -78,7 +85,7 @@ export class UserProfileComponent implements OnInit {
       );
       const users = JSON.parse(localStorage.getItem('users') || '[]');
       const updatedUsers = users.filter(
-        (user: any) => user.email !== loggedInUser.email
+        (user: any) => user.email !== loggedInUser.matchedUser.email
       );
       localStorage.setItem('users', JSON.stringify(updatedUsers));
       localStorage.removeItem('loggedInUserSession');
@@ -96,10 +103,6 @@ export class UserProfileComponent implements OnInit {
       if (index !== -1) {
         users[index] = updatedUser;
         localStorage.setItem('users', JSON.stringify(users));
-        localStorage.setItem(
-          'loggedInUserSession',
-          JSON.stringify(updatedUser)
-        );
         alert('Profile updated successfully!');
       } else {
         alert('User not found.');

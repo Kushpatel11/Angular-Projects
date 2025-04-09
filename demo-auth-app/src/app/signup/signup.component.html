@@ -14,7 +14,7 @@
               placeholder="Enter your first name"
               required
               name="firstname"
-              [(ngModel)]="firstnameValue"
+              [(ngModel)]="user.firstName"
             />
           </div>
 
@@ -27,7 +27,7 @@
               placeholder="Enter your last name"
               required
               name="lastname"
-              [(ngModel)]="lastnameValue"
+              [(ngModel)]="user.lastName"
             />
           </div>
 
@@ -40,7 +40,7 @@
               placeholder="Enter your email"
               required
               name="email"
-              [(ngModel)]="emailValue"
+              [(ngModel)]="user.email"
               email
             />
           </div>
@@ -54,7 +54,7 @@
               placeholder="Enter your password"
               required
               name="password"
-              [(ngModel)]="passwordValue"
+              [(ngModel)]="user.password"
               #passwordInput="ngModel"
               pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$"
             />

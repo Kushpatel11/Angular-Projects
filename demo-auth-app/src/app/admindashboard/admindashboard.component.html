@@ -22,7 +22,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let user of users(); let i = index">
+          @for(user of users(); track user.email; let i = $index){
+          <tr>
             <td>{{ i + 1 }}</td>
             <td>{{ user.firstName }}</td>
             <td>{{ user.lastName }}</td>
@@ -33,6 +34,7 @@
               </button>
             </td>
           </tr>
+          }
         </tbody>
       </table>
     </div>

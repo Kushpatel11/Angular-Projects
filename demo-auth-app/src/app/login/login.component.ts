@@ -35,24 +35,44 @@ export class LoginComponent {
     const users = storedUsers ? JSON.parse(storedUsers) : [];
     const enteredEmail = this.email().trim();
     const enteredPassword = this.password();
-    console.log(enteredEmail, enteredPassword);
+
+    // remember me
+
     if (this.rememberMe()) {
       localStorage.setItem('rememberedEmail', enteredEmail);
     } else {
       localStorage.removeItem('rememberedEmail');
     }
 
-    const matchedUser = users.find(
-      (user: any) =>
-        user.email === enteredEmail && user.password === enteredPassword
-    );
+    const adminEmail = 'admin@example.com';
+    const adminPassword = 'admin123';
 
-    if (matchedUser) {
-      localStorage.setItem('loggedInUserSession', JSON.stringify(matchedUser));
-      this.isSubmitted.set(true);
-      this.router.navigate(['/profile']);
+    // Admin Login
+    if (enteredEmail === adminEmail && enteredPassword === adminPassword) {
+      localStorage.setItem(
+        'adminSession',
+        JSON.stringify({ role: 'admin', adminEmail })
+      );
+      alert('Wlcome Admin!');
+      this.router.navigate(['/admindashboard']);
+      return;
     } else {
-      alert('Invalid email or password');
+      // user login
+      const matchedUser = users.find(
+        (user: any) =>
+          user.email === enteredEmail && user.password === enteredPassword
+      );
+
+      if (matchedUser) {
+        localStorage.setItem(
+          'loggedInUserSession',
+          JSON.stringify({ role: 'user', matchedUser })
+        );
+        this.isSubmitted.set(true);
+        this.router.navigate(['/profile']);
+      } else {
+        alert('Invalid email or password');
+      }
     }
   }
 }

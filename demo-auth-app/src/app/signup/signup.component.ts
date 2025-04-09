@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
+import { User } from '../userprofile/user.model';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -13,11 +14,12 @@ export class SignupComponent {
   private router = inject(Router);
 
   showPassword = false;
-
-  firstnameValue = '';
-  lastnameValue = '';
-  emailValue = '';
-  passwordValue = '';
+  user: User = {
+    email: '',
+    firstName: '',
+    lastName: '',
+    password: '',
+  };
 
   togglePassword() {
     this.showPassword = !this.showPassword;
@@ -26,10 +28,10 @@ export class SignupComponent {
   onSubmit() {
     console.log('submitted');
     const newUser = {
-      firstname: this.firstnameValue,
-      lastname: this.lastnameValue,
-      email: this.emailValue,
-      password: this.passwordValue,
+      firstName: this.user.firstName,
+      lastName: this.user.lastName,
+      email: this.user.email,
+      password: this.user.password,
     };
 
     const storedUsers = window.localStorage.getItem('users');
@@ -37,10 +39,10 @@ export class SignupComponent {
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
 
-    this.firstnameValue = '';
-    this.lastnameValue = '';
-    this.emailValue = '';
-    this.passwordValue = '';
+    this.user.firstName = '';
+    this.user.lastName = '';
+    this.user.email = '';
+    this.user.password = '';
     this.router.navigate(['/login']);
   }
 }
