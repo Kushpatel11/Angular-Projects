@@ -23,12 +23,25 @@
   </div>
 
   <div class="profile-card text-center">
+    <!-- Profile Image (click to select) -->
     <img
-      src="https://i.pravatar.cc/100?img=20"
+      [src]="profilePhoto() || 'default.jpg'"
       alt="Profile"
       class="profile-img mb-3"
+      style="cursor: pointer"
+      (click)="triggerFileInput()"
     />
-    <h4>John Doe</h4>
+
+    <!-- Hidden File Input -->
+    <input
+      type="file"
+      id="fileInput"
+      accept="image/*"
+      style="display: none"
+      (change)="onFileChange($event)"
+    />
+
+    <h4>{{ fullName }}</h4>
     <form
       [formGroup]="form()"
       class="mt-4 text-start"

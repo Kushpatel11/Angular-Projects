@@ -34,7 +34,7 @@ export class LoginComponent {
     const storedUsers = localStorage.getItem('users');
     const users = storedUsers ? JSON.parse(storedUsers) : [];
     const enteredEmail = this.email().trim();
-    const enteredPassword = this.password();
+    const enteredPassword = CryptoJS.SHA256(this.password()).toString();
 
     // remember me
 
@@ -45,7 +45,7 @@ export class LoginComponent {
     }
 
     const adminEmail = 'admin@example.com';
-    const adminPassword = 'admin123';
+    const adminPassword = CryptoJS.SHA256('admin123').toString();
 
     // Admin Login
     if (enteredEmail === adminEmail && enteredPassword === adminPassword) {

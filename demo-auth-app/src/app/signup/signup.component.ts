@@ -1,8 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { User } from '../userprofile/user.model';
+import * as CryptoJS from 'crypto-js';
+
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -26,16 +28,27 @@ export class SignupComponent {
   }
 
   onSubmit() {
-    console.log('submitted');
+    const password = this.user.password;
+    const hashedPassword = CryptoJS.SHA256(password).toString();
     const newUser = {
       firstName: this.user.firstName,
       lastName: this.user.lastName,
       email: this.user.email,
-      password: this.user.password,
+      password: hashedPassword,
     };
 
     const storedUsers = window.localStorage.getItem('users');
     const users = storedUsers ? JSON.parse(storedUsers) : [];
+
+    const existingUser = users.find(
+      (user: any) => user.email === newUser.email
+    );
+
+    if (existingUser) {
+      alert('Email already exists!');
+      return;
+    }
+
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
 

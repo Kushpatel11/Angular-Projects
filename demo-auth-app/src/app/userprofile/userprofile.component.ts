@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import {
   FormBuilder,
@@ -7,7 +14,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { User } from './user.model';
 
 @Component({
   selector: 'app-user-profile',
@@ -17,8 +23,14 @@ import { User } from './user.model';
   styleUrls: ['./userprofile.component.css'],
 })
 export class UserProfileComponent implements OnInit {
+  currentUser = JSON.parse(localStorage.getItem('loggedInUserSession') || '{}');
+  firstName = this.currentUser.matchedUser.firstName;
+  lastName = this.currentUser.matchedUser.lastName;
+  fullName = this.firstName + ' ' + this.lastName;
   private router = inject(Router);
   private fb = inject(FormBuilder);
+
+  @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
 
   isDarkMode = false;
 
@@ -26,11 +38,14 @@ export class UserProfileComponent implements OnInit {
     this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      email: [{ value: '' }],
-      mobile: ['', Validators.required],
+      email: [{ value: '', disabled: true }],
+      mobile: [''],
       password: ['', Validators.required],
     })
   );
+
+  profilePhoto = signal<string | null>(null); // preview image
+  selectedPhoto: string | null = null; // uploaded photo
 
   ngOnInit(): void {
     this.isDarkMode = localStorage.getItem('darkMode') === 'true';
@@ -54,6 +69,25 @@ export class UserProfileComponent implements OnInit {
         mobile: currentUser.mobile || '',
         password: currentUser.password || '',
       });
+      this.profilePhoto.set(currentUser.photo || null); // ✅ Set photo if available
+    }
+  }
+
+  triggerFileInput() {
+    // simulate click on hidden file input
+    const input = document.getElementById('fileInput') as HTMLInputElement;
+    input?.click();
+  }
+
+  onFileChange(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.selectedPhoto = reader.result as string;
+        this.profilePhoto.set(this.selectedPhoto); // show preview
+      };
+      reader.readAsDataURL(file);
     }
   }
 
@@ -96,7 +130,10 @@ export class UserProfileComponent implements OnInit {
 
   onUpdateProfile() {
     if (this.form().valid) {
-      const updatedUser = this.form().getRawValue();
+      const updatedUser = {
+        ...this.form().getRawValue(),
+        photo: this.selectedPhoto || this.profilePhoto(), // updated or keep previous
+      };
       const users = JSON.parse(localStorage.getItem('users') || '[]');
       const index = users.findIndex((u: any) => u.email === updatedUser.email);
 
