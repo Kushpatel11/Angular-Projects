@@ -9,9 +9,7 @@ export class UserGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate(): boolean {
-    const user = JSON.parse(
-      localStorage.getItem('loggedInUserSession') || 'null'
-    );
+    const user = JSON.parse(sessionStorage.getItem('userSession') || 'null');
     if (user && user.role === 'user') {
       return true;
     }

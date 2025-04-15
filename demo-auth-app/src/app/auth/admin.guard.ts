@@ -9,8 +9,8 @@ export class AdminGuard implements CanActivate {
   private router = inject(Router);
 
   canActivate(): boolean {
-    const user = JSON.parse(localStorage.getItem('adminSession') || 'null');
-    if (user && user.role === 'admin') {
+    const admin = JSON.parse(sessionStorage.getItem('adminSession') || 'null');
+    if (admin && admin.role === 'admin') {
       return true;
     }
 

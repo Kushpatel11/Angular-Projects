@@ -1,23 +1,25 @@
+// login.component.ts
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import * as CryptoJS from 'crypto-js';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   standalone: true,
-  imports: [FormsModule, RouterModule],
+  imports: [FormsModule, RouterModule, HttpClientModule],
 })
 export class LoginComponent {
+  private router = inject(Router);
+  private http = inject(HttpClient);
+
   email = signal('');
   password = signal('');
   showPassword = signal(false);
   rememberMe = signal(false);
-
   isSubmitted = signal(false);
-  private router = inject(Router);
 
   togglePassword(): void {
     this.showPassword.set(!this.showPassword());
@@ -32,48 +34,49 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    const storedUsers = localStorage.getItem('users');
-    const users = storedUsers ? JSON.parse(storedUsers) : [];
     const enteredEmail = this.email().trim();
-    const enteredPassword = CryptoJS.SHA256(this.password()).toString();
+    const enteredPassword = this.password().trim();
 
-    // remember me
-
+    // Save email if rememberMe is on
     if (this.rememberMe()) {
       localStorage.setItem('rememberedEmail', enteredEmail);
     } else {
       localStorage.removeItem('rememberedEmail');
     }
 
+    // Admin login (optional, still local)
     const adminEmail = 'admin@example.com';
-    const adminPassword = CryptoJS.SHA256('admin123').toString();
+    const adminPassword = 'admin123';
 
-    // Admin Login
     if (enteredEmail === adminEmail && enteredPassword === adminPassword) {
-      localStorage.setItem(
+      sessionStorage.setItem(
         'adminSession',
         JSON.stringify({ role: 'admin', adminEmail })
       );
-      alert('Wlcome Admin!');
+      alert('Welcome Admin!');
       this.router.navigate(['/admindashboard']);
       return;
-    } else {
-      // user login
-      const matchedUser = users.find(
-        (user: any) =>
-          user.email === enteredEmail && user.password === enteredPassword
-      );
-
-      if (matchedUser) {
-        localStorage.setItem(
-          'loggedInUserSession',
-          JSON.stringify({ role: 'user', matchedUser })
-        );
-        this.isSubmitted.set(true);
-        this.router.navigate(['/profile']);
-      } else {
-        alert('Invalid email or password');
-      }
     }
+
+    // Real API login
+    const payload = { email: enteredEmail, password: enteredPassword };
+
+    this.http.post<any>('http://127.0.0.1:8000/login', payload).subscribe({
+      next: (res) => {
+        sessionStorage.setItem(
+          'userSession',
+          JSON.stringify({
+            token: res.access_token,
+            role: 'user',
+            email: enteredEmail,
+          })
+        );
+        alert('Login successful!');
+        this.router.navigate(['/profile']);
+      },
+      error: (err) => {
+        alert(err.error.detail || 'Invalid credentials!');
+      },
+    });
   }
 }
