@@ -1,19 +1,18 @@
-// login.component.ts
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { UserService } from '../../core/user.service'; // ✅ Import
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   standalone: true,
-  imports: [FormsModule, RouterModule, HttpClientModule],
+  imports: [FormsModule, RouterModule],
 })
 export class LoginComponent {
   private router = inject(Router);
-  private http = inject(HttpClient);
+  private userService = inject(UserService); // ✅ Injected service
 
   email = signal('');
   password = signal('');
@@ -37,31 +36,29 @@ export class LoginComponent {
     const enteredEmail = this.email().trim();
     const enteredPassword = this.password().trim();
 
-    // Save email if rememberMe is on
     if (this.rememberMe()) {
       localStorage.setItem('rememberedEmail', enteredEmail);
     } else {
       localStorage.removeItem('rememberedEmail');
     }
 
-    // Admin login (optional, still local)
-    const adminEmail = 'admin@example.com';
-    const adminPassword = 'admin123';
-
-    if (enteredEmail === adminEmail && enteredPassword === adminPassword) {
+    // Local admin login (same)
+    if (
+      enteredEmail === 'admin@example.com' &&
+      enteredPassword === 'admin123'
+    ) {
       sessionStorage.setItem(
         'adminSession',
-        JSON.stringify({ role: 'admin', adminEmail })
+        JSON.stringify({ role: 'admin', adminEmail: enteredEmail })
       );
       alert('Welcome Admin!');
       this.router.navigate(['/admindashboard']);
       return;
     }
 
-    // Real API login
     const payload = { email: enteredEmail, password: enteredPassword };
 
-    this.http.post<any>('http://127.0.0.1:8000/login', payload).subscribe({
+    this.userService.login(payload).subscribe({
       next: (res) => {
         sessionStorage.setItem(
           'userSession',

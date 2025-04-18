@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { SignupComponent } from './signup/signup.component';
-import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './features/signup/signup.component';
+import { LoginComponent } from './features/login/login.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'signup', pathMatch: 'full' },
@@ -9,11 +9,13 @@ export const routes: Routes = [
   {
     path: 'admindashboard',
     loadChildren: () =>
-      import('./admindashboard/admin.routes').then((m) => m.adminRoutes),
+      import('./features/admindashboard/admin.routes').then(
+        (m) => m.adminRoutes
+      ),
   },
   {
     path: 'profile',
     loadChildren: () =>
-      import('./userprofile/user.routes').then((m) => m.userRoutes),
+      import('./features/userprofile/user.routes').then((m) => m.userRoutes),
   },
 ];

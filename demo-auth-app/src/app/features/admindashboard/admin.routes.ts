@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { AdminDashboardComponent } from './admindashboard.component';
-import { AdminGuard } from '../auth/admin.guard';
+import { AdminGuard } from '../../core/admin.guard';
 
 export const adminRoutes: Routes = [
   {

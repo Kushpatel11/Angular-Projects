@@ -1,19 +1,18 @@
-// signup.component.ts
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink, RouterModule } from '@angular/router';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { Router, RouterModule } from '@angular/router';
+import { UserService } from '../../core/user.service'; // ✅ Import
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css'],
   standalone: true,
-  imports: [FormsModule, RouterLink, RouterModule, HttpClientModule],
+  imports: [FormsModule, RouterModule],
 })
 export class SignupComponent {
   private router = inject(Router);
-  private http = inject(HttpClient);
+  private userService = inject(UserService); // ✅ Injected service
 
   showPassword = false;
   user = {
@@ -32,11 +31,11 @@ export class SignupComponent {
       firstname: this.user.firstName,
       lastname: this.user.lastName,
       email: this.user.email,
-      password: this.user.password, // Raw password; backend will hash
+      password: this.user.password,
     };
 
-    this.http.post('http://127.0.0.1:8000/signup', payload).subscribe({
-      next: (res) => {
+    this.userService.signup(payload).subscribe({
+      next: () => {
         alert('User registered successfully!');
         this.router.navigate(['/login']);
       },
