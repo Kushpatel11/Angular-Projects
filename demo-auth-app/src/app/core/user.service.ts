@@ -1,8 +1,8 @@
-// src/app/core/user.service.ts
+// user.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Signal, signal } from '@angular/core';
+import { signal } from '@angular/core';
 
 interface LoginPayload {
   email: string;
@@ -14,6 +14,13 @@ interface SignupPayload {
   lastname: string;
   email: string;
   password: string;
+}
+
+interface ProfileUpdatePayload {
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  mobile?: string;
 }
 
 @Injectable({
@@ -35,14 +42,22 @@ export class UserService {
   userProfile = signal<any>(null);
 
   getProfile() {
-    return this.http.get(this.baseUrl);
+    return this.http.get(`${this.baseUrl}/profile`);
   }
 
-  updateProfile(updatedData: any) {
-    return this.http.put(this.baseUrl, updatedData);
+  logout() {
+    sessionStorage.removeItem('userSession');
+    this.userProfile.set(null);
+  }
+
+  updateProfile(updatedData: ProfileUpdatePayload) {
+    const cleanData = Object.fromEntries(
+      Object.entries(updatedData).filter(([_, v]) => v != null)
+    );
+    return this.http.put(`${this.baseUrl}/profile-update`, cleanData);
   }
 
   deleteAccount() {
-    return this.http.delete(this.baseUrl);
+    return this.http.delete(`${this.baseUrl}/profile-delete`);
   }
 }

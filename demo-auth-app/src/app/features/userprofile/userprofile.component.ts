@@ -17,7 +17,6 @@ import {
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../core/user.service'; // ✅ Import service
-import { User } from './user.model';
 
 @Component({
   selector: 'app-user-profile',
@@ -30,6 +29,7 @@ export class UserProfileComponent implements OnInit {
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
+  fullname = signal<string>('');
 
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
 
@@ -41,7 +41,6 @@ export class UserProfileComponent implements OnInit {
       lastName: ['', Validators.required],
       email: [{ value: '', disabled: true }],
       mobile: [''],
-      password: ['', Validators.required],
     })
   );
 
@@ -55,14 +54,14 @@ export class UserProfileComponent implements OnInit {
     this.userService.getProfile().subscribe({
       next: (res: any) => {
         this.form().patchValue({
-          firstName: res.firstName,
-          lastName: res.lastName,
+          firstName: res.firstname,
+          lastName: res.lastname,
           email: res.email,
           mobile: res.mobile || '',
-          password: '', // Do not prefill password
         });
         this.profilePhoto.set(res.photo || null);
         this.userService.userProfile.set(res);
+        this.fullname.set(res.firstname + ' ' + res.lastname);
       },
       error: (err) => {
         alert(err.error.detail || 'Failed to load profile');
@@ -101,7 +100,7 @@ export class UserProfileComponent implements OnInit {
 
   logOut() {
     if (confirm('Are you sure?')) {
-      sessionStorage.removeItem('userSession');
+      this.userService.logout();
       this.router.navigate(['/login']);
     }
   }
@@ -121,14 +120,23 @@ export class UserProfileComponent implements OnInit {
 
   onUpdateProfile() {
     if (this.form().valid) {
-      const updatedUser = {
-        ...this.form().getRawValue(),
-        photo: this.selectedPhoto || this.profilePhoto(),
-      };
+      const rawData = this.form().getRawValue();
+
+      // Send only defined, non-null, non-empty values
+      const updatedUser = Object.fromEntries(
+        Object.entries(rawData).filter(
+          ([_, v]) => v !== null && v !== undefined
+        )
+      );
+
+      console.log('📦 Sending to backend:', updatedUser);
 
       this.userService.updateProfile(updatedUser).subscribe({
         next: () => alert('Profile updated successfully!'),
-        error: (err) => alert(err.error.detail || 'Failed to update profile'),
+        error: (err) => {
+          console.error('Update Error:', err);
+          alert(err.error.detail || 'Failed to update profile');
+        },
       });
     } else {
       alert('Please fill all required fields.');

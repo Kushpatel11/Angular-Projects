@@ -10,11 +10,11 @@ export class AdminGuard implements CanActivate {
 
   canActivate(): boolean {
     const admin = JSON.parse(sessionStorage.getItem('adminSession') || 'null');
-    if (admin && admin.role === 'admin') {
+    if (admin && admin.role?.toLowerCase() === 'admin') {
       return true;
     }
 
-    this.router.navigate(['/login']); // redirect to login
+    this.router.navigate(['/adminlogin']); // redirect to login
     return false;
   }
 }

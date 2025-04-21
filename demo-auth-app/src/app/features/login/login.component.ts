@@ -1,3 +1,5 @@
+//login.component.ts
+
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -32,6 +34,11 @@ export class LoginComponent {
     }
   }
 
+  goToAdminLogin() {
+    window.confirm('Are you Admin?');
+    this.router.navigate(['/adminlogin']);
+  }
+
   onSubmit() {
     const enteredEmail = this.email().trim();
     const enteredPassword = this.password().trim();
@@ -40,20 +47,6 @@ export class LoginComponent {
       localStorage.setItem('rememberedEmail', enteredEmail);
     } else {
       localStorage.removeItem('rememberedEmail');
-    }
-
-    // Local admin login (same)
-    if (
-      enteredEmail === 'admin@example.com' &&
-      enteredPassword === 'admin123'
-    ) {
-      sessionStorage.setItem(
-        'adminSession',
-        JSON.stringify({ role: 'admin', adminEmail: enteredEmail })
-      );
-      alert('Welcome Admin!');
-      this.router.navigate(['/admindashboard']);
-      return;
     }
 
     const payload = { email: enteredEmail, password: enteredPassword };

@@ -75,7 +75,19 @@
               </button>
             </div>
 
-            <p class="text-center mt-3">No account? <a href="">Sign up</a></p>
+            <p class="text-center mt-3">
+              No account? <a [routerLink]="['/login']">Sign up</a>
+            </p>
+
+            <div class="admin-login-section mt-4">
+              <button
+                type="button"
+                class="btn btn-outline-secondary w-100"
+                (click)="goToAdminLogin()"
+              >
+                <i class="fas fa-user-shield"></i> Admin Login
+              </button>
+            </div>
           </form>
         </div>
 
